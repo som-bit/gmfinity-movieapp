@@ -1,13 +1,13 @@
 // Title : http://www.omdbapi.com/?apikey=f9d55ac1&t=avatar
 // Search-result : https://www.omdbapi.com/?apikey=f9d55ac1&s=avatar&page=1
-
 const searchBox = document.getElementById('search-box');
 const searchList = document.getElementById('search-list');
 const result = document.getElementById('result');
 const addToFavourites = document.querySelector('#add-to-fav');
-
+console.log('here');
 // Function to find movies
 function findMovies() {
+    console.log('find movies')
     let title = (searchBox.value).trim();
     if (title.length > 0) {
         searchList.classList.remove('hide-search-list');
@@ -19,6 +19,7 @@ function findMovies() {
 
 // Function to get movies from OMDB API
 async function loadMovies(title) {
+    console.log('load movies')
     const URL = ` http://www.omdbapi.com/?i=tt3896198&apikey=9c148ccf&s=${title}&page=1`;
     const res = await fetch(`${URL}`);
     const data = await res.json();
@@ -27,6 +28,8 @@ async function loadMovies(title) {
 
 // Function to display movie in search list
 function displayMovieList(movies) {
+    console.log('display movies list')
+
     searchList.innerHTML = "";
     for (let i = 0; i < movies.length; i++) {
         let listItem = document.createElement('div');
@@ -53,12 +56,14 @@ function displayMovieList(movies) {
 
 // Function to get movie details from OMDB API
 function loadMovieDetails() {
+    console.log('load movie details')
+
     const searchListMovies = searchList.querySelectorAll('.search-list-item');
     searchListMovies.forEach(movie => {
         movie.addEventListener('click', async () => {
             searchList.classList.add('hide-search-list');
             searchBox.value = "";
-            const result = await fetch(` http://www.omdbapi.com/?i=tt3896198&apikey=9c148ccf&s=${title}&page=1`);
+            const result = await fetch(`https://www.omdbapi.com/?i=${movie.dataset.id}&apikey=9c148ccf`);
             const movieDetails = await result.json();
             displayMovieDetails(movieDetails);
         });
@@ -67,6 +72,8 @@ function loadMovieDetails() {
 
 // Function to display movie info
 function displayMovieDetails(details) {
+    console.log('display movies details')
+
     result.innerHTML = `
     <div class = "poster">
         <img class="movie-poster" src = "${(details.Poster != "N/A") ? details.Poster : "image_not_found.png"}" alt = "movie poster">
@@ -106,6 +113,8 @@ addToFavourites.addEventListener('click', function () {
 
 // event listener which gets activated on clicking search box
 window.addEventListener('click', (event) => {
+    console.log('here window')
+
     if (event.target.className != "searchBox") {
         searchList.classList.add('hide-search-list');
     }
