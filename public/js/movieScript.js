@@ -1,10 +1,10 @@
-// Title : http://www.omdbapi.com/?apikey=f9d55ac1&t=avatar
-// Search-result : https://www.omdbapi.com/?apikey=f9d55ac1&s=avatar&page=1
+
 const searchBox = document.getElementById('search-box');
 const searchList = document.getElementById('search-list');
 const result = document.getElementById('result');
 const addToFavourites = document.querySelector('#add-to-fav');
 console.log('here');
+
 // Function to find movies
 function findMovies() {
     console.log('find movies')
@@ -56,15 +56,19 @@ function displayMovieList(movies) {
 
 // Function to get movie details from OMDB API
 function loadMovieDetails() {
-    console.log('load movie details')
+
 
     const searchListMovies = searchList.querySelectorAll('.search-list-item');
     searchListMovies.forEach(movie => {
         movie.addEventListener('click', async () => {
             searchList.classList.add('hide-search-list');
             searchBox.value = "";
+            console.log(movie.dataset.id)
             const result = await fetch(`https://www.omdbapi.com/?i=${movie.dataset.id}&apikey=9c148ccf`);
             const movieDetails = await result.json();
+            // Moviedata is not defined
+            let newMovie = new Moviedata(movieDetails);
+            console.log(newMovie);
             displayMovieDetails(movieDetails);
         });
     });
@@ -106,6 +110,7 @@ addToFavourites.addEventListener('click', function () {
         title: favMovieTitle,
         poster: favMoviePoster
     }
+    console.log(favMovie);
     favMovieInLocal.push(favMovie);
     localStorage.setItem('favMoviesArray', JSON.stringify(favMovieInLocal));
 });
