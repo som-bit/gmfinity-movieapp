@@ -175,7 +175,6 @@ app.post('/register', async (req, res) => {
     })
     try {
         const user = await newuser.save();
-
         const playlistFolderData = [
             {
                 name: "private",
