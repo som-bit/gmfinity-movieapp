@@ -33,7 +33,8 @@ app.set('trust proxy', 1)
 app.use(session({
     secret: 'keyboard cat',
     resave: false,
-    // saveUninitialized: true
+    saveUninitialized: true
+
 }))
 
 
@@ -108,7 +109,7 @@ async function getUserPlayListByIds({ folderId, movieId }) {
 async function getUserPlayList({ folderId }) {
     return await UserPlaylist.find({
         playlistFolder: folderId
-    }).populate(["movie","playlistFolder"]);
+    }).populate(["movie", "playlistFolder"]);
 }
 
 
@@ -209,7 +210,7 @@ app.post('/register', async (req, res) => {
     }
 })
 
-app.get('/getUserPlaylist/:folderId',async (req, res) => {
+app.get('/getUserPlaylist/:folderId', async (req, res) => {
     const folderId = req.params.folderId;
     const val = await getUserPlayList({ folderId });
     console.log(val);
