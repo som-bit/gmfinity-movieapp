@@ -2,13 +2,21 @@ const { StatusCodes } = require("http-status-codes");
 const User = require("../models/user");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
-const shortid = require("shortid");
+
+
+// // Set the JWT token as a cookie
+// const cookieOptions = {
+//     httpOnly: true, // Prevent JavaScript access to the cookie
+//     expires: new Date(Date.now() + 1 * 60 * 60 * 1000), // Cookie expiration time (1 hour in this case)
+//     // secure: process.env.NODE_ENV === 'production', // Set to true in production to ensure cookies are only sent over HTTPS
+// };
 
 
 
 
+//Signup Function
 const signUp = async (req, res) => {
-    const { firstName, lastName, email, password } = req.body;
+    const { firstName, lastName, username, email, password } = req.body;
     if (!firstName || !lastName || !email || !password) {
         return res.status(StatusCodes.BAD_REQUEST).json({
             message: "Please Provide Required Information",
@@ -20,6 +28,7 @@ const signUp = async (req, res) => {
     const userData = {
         firstName,
         lastName,
+        username,
         email,
         hash_password,
     };
@@ -35,11 +44,17 @@ const signUp = async (req, res) => {
             else
                 res
                     .status(StatusCodes.CREATED)
-                    .json({ message: "User created Successfully" });
+                    .json({ message: "User created Successfully " });
+            console.log("User created Successfully ");
         });
 
     }
 };
+
+
+
+
+//SignIn function
 const signIn = async (req, res) => {
     try {
         if (!req.body.email || !req.body.password) {
@@ -55,11 +70,20 @@ const signIn = async (req, res) => {
                 const token = jwt.sign(
                     { _id: user._id },
                     process.env.JWT_SECRET, { expiresIn: "30d" });
-                const { _id, firstName, lastName, email,  fullName } = user;
+                const { _id, firstName, lastName, username, email, hash_password } = user;
+                console.log("reached here ");
+                req.session._id = user._id;
+                console.log("req.session.userId: ", req.session._id);
                 res.status(StatusCodes.OK).json({
                     token,
-                    user: { _id, firstName, lastName, email, fullName },
+                    user: { _id, firstName, lastName, username, email, hash_password },
+                    message: "User Logged in Successfully ",
+                    redirectTo: 'http://localhost:5500/home.html'
                 });
+
+                console.log("User Loggedin Successfully ");
+
+
             } else {
                 res.status(StatusCodes.UNAUTHORIZED).json({
                     message: "Something went wrong!",

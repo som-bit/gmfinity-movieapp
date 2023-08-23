@@ -2,12 +2,24 @@ const express = require("express");
 require("dotenv").config();
 const connectDB = require("./db/connect");
 const app = express();
+const session = require('express-session');
 var cors = require("cors");
 const authRouter = require("./routes/auth");
+
+
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(session({
+    secret: process.env.JWT_SECRET, // Change this to a strong secret
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+        maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days in milliseconds
+    },
+}));
 app.use("/api", authRouter);
+
 //Port and Connect to DB
 const port = process.env.PORT || 3000;
 
@@ -177,7 +189,7 @@ start();
 //         req.user_id = user._id.toString();
 //         req.session.save(function (err) {
 //             if (err) return next(err)
-//             res.redirect('http://localhost:5500/home.html');
+//             
 //         })
 
 //     } else {
